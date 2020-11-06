@@ -3,35 +3,38 @@
             [clojure.java.io :as io])
   (:gen-class))
 
-(defn delete-existing-corpus
+(defn rm
   "delete existing corpus, and create a new one afterwards"
   [& _]
   (io/delete-file "subtitles_corpus.dat" true))
 
-(defn make-corpus
+(defn mk
   "clean subtitles and make it a tiny text corpus"
   [& _]
-  (let [files (next (file-seq (io/file "srt")))
+  (let [fs (next (file-seq (io/file "srt")))
         ;; using regexp to clean the subtitles
-        time_stamp_scene_number_regexp #"\d+\n\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}"
-        html_tag_regexp #"</?.+?>"
-        empty_line_regexp #"\n+"
+        ;; time-stamp and scene numbers
+        ts #"\d+\n\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}"
+        ;; html tags, for italics and bolds, etc
+        ht #"</?.+?>"
+        ;; empty lines
+        el #"\n+"
         ;; functions to replace them
-        replace_time_stamp_scene #(string/replace % time_stamp_scene_number_regexp "")
-        replace_html_tag #(string/replace % html_tag_regexp "")
-        replace_empty_line #(string/replace % empty_line_regexp "\n")]
-    (for [file files
+        ts! #(string/replace % ts "")
+        ht! #(string/replace % ht "")
+        el! #(string/replace % el "\n")]
+    (for [f fs
           ;; slurp it and then clean it one by one
-          :let [content (->> (slurp (str file))
-                             (replace_time_stamp_scene)
-                             (replace_html_tag)
-                             (replace_empty_line))]]
-      (spit "subtitles_corpus.dat" content
+          :let [c (->> (slurp (str f))
+                       (ts!)
+                       (ht!)
+                       (el!))]]
+      (spit "subtitles_corpus.dat" c
             ;; append to ensure it will be a single file with all the contents
             :append true))))
 
 (defn -main
-  "put them up"
+  "put them up together"
   [& _]
-  (delete-existing-corpus)
-  (make-corpus))
+  (rm)
+  (mk))
