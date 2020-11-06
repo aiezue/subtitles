@@ -3,6 +3,11 @@
             [clojure.java.io :as io])
   (:gen-class))
 
+(defn delete-existing-corpus
+  "delete existing corpus, and create a new one afterwards"
+  [& _]
+  (io/delete-file "subtitles_corpus.dat" true))
+
 (defn make-corpus
   "clean subtitles and make it a tiny text corpus"
   [& _]
@@ -28,4 +33,5 @@
 (defn -main
   "put them up"
   [& _]
+  (delete-existing-corpus)
   (make-corpus))
