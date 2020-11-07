@@ -1,4 +1,4 @@
-(ns aiezue.subtitle-corpus
+(ns aiezue.subtitle-corpus.create
   (:require [clojure.string :as string]
             [clojure.java.io :as io])
   (:gen-class))
@@ -32,6 +32,7 @@
       (spit "subtitles_corpus.dat" c
             ;; append to ensure it will be a single file with all the contents
             :append true))))
+
 
 (defn -main
   "put them up together"
