@@ -9,7 +9,7 @@
   [& _]
   (let [pos-tag (make-pos-tagger "models/en-pos-maxent.bin")
         tokenize (make-tokenizer "models/en-token.bin")
-        s (slurp "subtitles_corpus.dat")
+        s (slurp "single_movie_subtitles_corpus.dat")
         pos (pos-tag (tokenize s))
         fq (frequencies (vals (into (hash-map) pos)))]
     (pprint pos)
