@@ -9,12 +9,12 @@
   [& _]
   (let [pos-tag (make-pos-tagger "models/en-pos-maxent.bin")
         tokenize (make-tokenizer "models/en-token.bin")
-        s (slurp "single_movie_subtitles_corpus.dat")
+        s (slurp "subtitles_corpus.dat")
         pos (pos-tag (tokenize s))
-        fq (frequencies (vals (into (hash-map) pos)))]
+        fq (frequencies (vals (into (sorted-map) pos)))]
     (pprint pos)
     (pprint fq)
-    (c/view (c/pie-chart fq))))
+    (c/view (c/pie-chart fq {:title "POS Pie Chart" :render-style :donut :theme :ggplot2}))))
 
 (defn -main
   "paint it on the walls"
